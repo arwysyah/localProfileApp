@@ -70,9 +70,58 @@ const globalStyle = StyleSheet.create({
     shadowRadius: 4.65,
     elevation: 8,
   },
-  textInput: {borderBottomWidth: 1.2, borderBottomColor: 'grey'},
+  profilImageBigger: {
+    width: width / 3,
+    height: width / 3,
+    borderRadius: width / 6,
+    padding: 10,
+    top: 2,
+    left: 2,
+  },
+  imageWrapper: {
+    width: width / 2.9,
+    height: width / 2.9,
+    borderRadius: width / 5.6,
+    // padding: 10,
+    backgroundColor: '#ffffff',
+  },
+  textInput: {
+    borderBottomWidth: 1.2,
+    borderBottomColor: 'grey',
+  },
+  preview: {
+    flex: 1,
+    backgroundColor: 'black',
+  },
+  capture: {
+    // backgroundColor: '#fff',
+    borderRadius: 5,
+    padding: 15,
+    paddingHorizontal: 20,
+    alignSelf: 'center',
+    margin: 20,
+  },
 
-  textButton: {fontSize: 18, color: 'white', fontWeight: 'bold'},
+  textButton: {
+    fontSize: 18,
+    color: 'white',
+    fontWeight: 'bold',
+  },
+  profileInfoText: {
+    fontWeight: 'bold',
+    fontSize: 18,
+    marginVertical: 10,
+  },
+  mapContainer: {
+    overflow: 'hidden',
+    borderColor: 'red',
+    borderRadius: 15,
+    shadowOpacity: 0.4,
+    elevation: 1.5,
+    marginBottom: 5,
+    shadowRadius: 1,
+    shadowOffset: {height: 2, width: 0},
+  },
 });
 
 export {

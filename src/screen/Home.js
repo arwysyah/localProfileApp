@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react';
-import {View, Text, SafeAreaView} from 'react-native';
+import {View,SafeAreaView,Alert} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {globalStyle,TOP} from '../styles';
+import {globalStyle, TOP} from '../styles';
 const {container, cardContainer} = globalStyle; //destructuring style for not make reference
 const Home = ({navigation}) => {
   useEffect(() => {
@@ -17,7 +17,7 @@ const Home = ({navigation}) => {
         navigation.replace('Login');
       }
     } catch (e) {
-      console.log(e)
+      Alert.alert('Maaf sepertinya ada kesalahan')
     }
   };
   return (

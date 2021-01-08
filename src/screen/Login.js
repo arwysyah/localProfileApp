@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState,useEffect} from 'react';
 import {
   View,
   Text,
@@ -25,7 +25,22 @@ const realPassword = '1';
 const Login = ({navigation}) => {
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
+  useEffect(() => {
+    getData();
+  }, []);
 
+  const getData = async () => {
+    try {
+      const value = await AsyncStorage.getItem('rootUser');
+      if (value !== null) {
+        await navigation.replace('BottomNavigation');
+      } else {
+       await navigation.replace('Login');
+      }
+    } catch (e) {
+      console.log(e)
+    }
+  };
   async function handleSignIn() {
     //use function declaration cause The arrow function returns a new function every time. This causes React to think something has changed in our view, when in fact nothing has.
     try {
@@ -83,7 +98,7 @@ const Login = ({navigation}) => {
           onChangeText={(pswd) => setPassword(pswd)}
         />
       </View>
-      <TouchableOpacity style={[commonButton]} onPress={handleSignIn}>
+      <TouchableOpacity style={commonButton} onPress={handleSignIn}>
         <Text style={textButton}>Login</Text>
       </TouchableOpacity>
     </SafeAreaView>

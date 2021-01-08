@@ -1,9 +1,8 @@
 import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import MaterialCommunity from 'react-native-vector-icons/MaterialCommunityIcons';
-import Home from '../../screen/Home'
-import Profile from '../../screen/Profile'
-
+import Home from '../../screen/Home';
+import {ProfileStack }from '../StackNavigation/index';
 
 const Tab = createBottomTabNavigator();
 export default function BottomNavigation() {
@@ -13,15 +12,13 @@ export default function BottomNavigation() {
       backBehavior="initialRoute"
       screenOptions={({route, navigation}) => ({
         tabBarIcon: ({focused, size, color}) => {
-            let iconName;
+          let iconName;
 
-            if (route.name === 'Home') {
-              iconName = focused
-                ? 'home'
-                : 'home-outline';
-            } else if (route.name === 'Profile') {
-              iconName = focused ? 'account-box' : 'account-box-outline';
-            }
+          if (route.name === 'Home') {
+            iconName = focused ? 'home' : 'home-outline';
+          } else if (route.name === 'ProfileStack') {
+            iconName = focused ? 'account-box' : 'account-box-outline';
+          }
 
           // You can return any component that you like here!
           return (
@@ -56,18 +53,9 @@ export default function BottomNavigation() {
           elevation: 7,
         },
         tabStyle: {height: 40},
-
-        // style: {
-        //   height: 80,
-        //   marginVertical: -30,
-        //   backgroundColor: 'black',
-        //   // opacity:0.7
-        // },
-        // tabStyle: {height: 40},
       }}>
       <Tab.Screen name="Home" component={Home} />
-      <Tab.Screen name="Profile" component={Profile} />
-     
+      <Tab.Screen name="ProfileStack" component={ProfileStack} />
     </Tab.Navigator>
   );
 }
