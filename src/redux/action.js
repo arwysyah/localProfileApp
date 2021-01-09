@@ -1,6 +1,7 @@
 import {
     GET_PHOTO,
-    SIGN_IN
+    SIGN_IN,
+    GET_DEVICE
    } from './stringType';
 
    export const SET_PROFILE_PICTURE= (value) => {
@@ -17,10 +18,12 @@ import {
       value: data,
     };
   };
-  // export const SET_SIGNIN = (payload) => {
-  //     console.log(payload)
-  //   return function (dispatch) {
-  //    dispatch(SET_PROFILE(payload))
-  //   };
-  // };
+  export const SET_DEVICE = (data) => {
+    //   console.log(params, 'paras');
+    return {
+      type: GET_DEVICE,
+      value: data,
+    };
+  };
+
 

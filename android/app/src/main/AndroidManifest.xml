@@ -9,6 +9,8 @@
     <uses-permission  android:name="android.permission.ACCESS_WIFI_STATE" />
       <uses-permission android:name="android.permission.RECORD_AUDIO"/>
         <uses-permission android:name="android.permission.CAMERA" />
+  <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
 
     <application
@@ -18,6 +20,9 @@
       android:roundIcon="@mipmap/ic_launcher_round"
       android:allowBackup="false"
       android:theme="@style/AppTheme">
+    
+
+      
         <meta-data
      android:name="com.google.android.geo.API_KEY"
        android:value="AIzaSyCKkP5V-xqzK8GmNnNAyN_cxSIYr3t29Fo"/>

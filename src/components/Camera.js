@@ -1,4 +1,4 @@
-import React, {useState, useCallback} from 'react';
+import React, {useState, useCallback,useEffect} from 'react';
 import {
   View,
   TouchableOpacity,
@@ -13,6 +13,7 @@ import RNFetchBlob from 'rn-fetch-blob';
 import appdata from '../secret/firebaseKey';
 import {useDispatch} from 'react-redux';
 import {SET_PROFILE_PICTURE} from '../redux/action';
+import OneSignal from 'react-native-onesignal'; 
 const {capture, preview, container, closeIconContainer} = globalStyle;
 const Blob = RNFetchBlob.polyfill.Blob;
 const fs = RNFetchBlob.fs;
@@ -38,6 +39,8 @@ const Camera = ({closeCamera}) => {
   const [userPathName, setName] = useState('');
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
+
+  
   const takePicture = async () => {
     if (camera) {
       const options = {quality: 0.1, base64: true};
@@ -80,6 +83,38 @@ const Camera = ({closeCamera}) => {
         });
     });
   }
+  const sendNotification = async () => {
+    let headers = {
+      'Content-Type': 'application/json',
+      Authorization: 'Basic N2I4NjMwNDctOTM3ZC00MTY5LTk2ODktMTVhNjY0ZjAxZGIx',
+    };
+
+    let endpoint = 'https://onesignal.com/api/v1/notifications';
+
+    let params = {
+      method: 'POST',
+      headers: headers,
+      body: JSON.stringify({
+        app_id: 'a6a1f13d-4669-4d98-86c0-d99aef433795',
+        included_segments: ["Active Users"],
+        priority: 10,
+        contents: {en: `Upload Photo Berhasil`},
+        headings: {en: 'Anda Berhasil Upload Photo'},
+        buttons: [
+          {
+            id: 'id1',
+            text: 'Tolak',
+          },
+          {
+            id: 'id2',
+            text: 'Terima',
+          },
+        ],
+      }),
+    };
+    fetch(endpoint, params).then(res => console.log('kkk', res));
+  };
+
   async function uploadImage() {
     const mime = 'image/jpeg';
 
@@ -89,6 +124,7 @@ const Camera = ({closeCamera}) => {
         await formatUpload(photo, mime, name).then((url) => {
           setUrlPhoto(url);
           dispatch(SET_PROFILE_PICTURE(url));
+          sendNotification()
         });
       } catch (error) {
         console.log(error);

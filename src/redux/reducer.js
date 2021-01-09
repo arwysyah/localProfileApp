@@ -1,10 +1,12 @@
 import {
    GET_PHOTO,
-   SIGN_IN
+   SIGN_IN,
+   GET_DEVICE
   } from './stringType';
   const initialState = {
     profile:[],
-    photo:null
+    photo:null,
+    device:''
   };
   
 const reducer = (state = initialState, action) => {
@@ -13,7 +15,11 @@ const reducer = (state = initialState, action) => {
         return {...state, photo: action.value};
       case SIGN_IN:
         return {...state,profile: action.value};
+        case GET_DEVICE:
+          return {...state,profile: action.value};
+      
     }
+    
   };
   
   export {reducer};

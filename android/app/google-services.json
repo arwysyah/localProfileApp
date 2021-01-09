@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "81206349039",
+    "firebase_url": "https://localprofile-17bf7-default-rtdb.firebaseio.com",
+    "project_id": "localprofile-17bf7",
+    "storage_bucket": "localprofile-17bf7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:81206349039:android:a92db34be568f3cae81f1a",
+        "android_client_info": {
+          "package_name": "com.localprofileapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "81206349039-37oo57ut9i4s3id0c2gfmc56jhdsrph3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.localprofileapp",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "81206349039-v28oq5ohdb1tgr62klkg88lbsfmmpdec.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDmoTMC4KfFAM3Vwevqv9XZ3FIyobjo3b8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "81206349039-v28oq5ohdb1tgr62klkg88lbsfmmpdec.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

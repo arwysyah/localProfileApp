@@ -22,8 +22,8 @@ const {
   textButton,
   image,
 } = globalStyle; // Destructuring saves from creating temporary references for those properties, and from repetitive access of the object.
-const realEmail = 'u';
-const realPassword = '1';
+const realEmail = 'user@test.com';
+const realPassword = '12345678';
 const Login = ({navigation}) => {
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');

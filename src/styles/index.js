@@ -1,5 +1,6 @@
 import React from 'react';
 import {StyleSheet, Dimensions} from 'react-native';
+
 const {height, width} = Dimensions.get('window');
 const spacing = 12;
 const SIZE = width * 0.34;

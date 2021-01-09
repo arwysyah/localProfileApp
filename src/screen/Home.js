@@ -1,31 +1,30 @@
-import React,{useEffect, useState} from 'react';
-import {View, SafeAreaView, Alert, Image, Text} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {View, SafeAreaView, Image, Text} from 'react-native';
 import {globalStyle, height} from '../styles';
 import {useSelector} from 'react-redux';
-import AsyncStorage from '@react-native-async-storage/async-storage'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const {container, cardContainer, imageProfile, avatarContainer} = globalStyle; //destructuring style for not make reference
 
-const Home = ({navigation}) => {
-  const [email,setEmail]=useState('')
+const Home = () => {
+  const [email, setEmail] = useState('');
   const globalState = useSelector((state) => state);
   const profileImage = globalState.photo;
-//not using reselect cause will overkill on this project
+  //not using reselect cause will overkill on this project
 
+  useEffect(() => {
+    getData();
+  }, []);
 
-useEffect(()=>{
-getData()
-},[])
+  const getData = async () => {
+    try {
+      const jsonValue = await AsyncStorage.getItem('rootUser');
+      let newVal = jsonValue !== null ? JSON.parse(jsonValue) : null;
+      setEmail(newVal.email);
+    } catch (e) {
+      alert(e);
+    }
+  };
 
-const getData = async () => {
-  try {
-    const jsonValue = await AsyncStorage.getItem('rootUser')
-   let newVal =  jsonValue !== null ? JSON.parse(jsonValue) : navigation.replace('Login')
-   setEmail(newVal.email) 
-
-  } catch(e) {
-   alert(e)
-  }
-}
   return (
     <SafeAreaView style={container}>
       <View style={{alignItems: 'center', top: height * 0.4}}>
