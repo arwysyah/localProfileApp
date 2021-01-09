@@ -1,9 +1,7 @@
-
-import React, {useRef, useState} from 'react';
+import React, {useState, useCallback} from 'react';
 import {
   View,
   TouchableOpacity,
-  Image,
   ImageBackground,
   ToastAndroid,
   ActivityIndicator,
@@ -11,8 +9,11 @@ import {
 import {RNCamera} from 'react-native-camera';
 import {globalStyle, height, width, TOP, spacing} from '../styles/index';
 import MaterialCommunity from 'react-native-vector-icons/MaterialCommunityIcons';
-import RNFetchBlob from 'rn-fetch-blob'
-const{capture,preview,container}=globalStyle
+import RNFetchBlob from 'rn-fetch-blob';
+import appdata from '../secret/firebaseKey';
+import {useDispatch} from 'react-redux';
+import {SET_PROFILE_PICTURE} from '../redux/action';
+const {capture, preview, container, closeIconContainer} = globalStyle;
 const Blob = RNFetchBlob.polyfill.Blob;
 const fs = RNFetchBlob.fs;
 window.XMLHttpRequest = RNFetchBlob.polyfill.XMLHttpRequest;
@@ -21,42 +22,110 @@ window.Blob = Blob;
 const Fetch = RNFetchBlob.polyfill.Fetch;
 // replace built-in fetch
 window.fetch = new Fetch({
-  // enable this option so that the response data conversion handled automatically
   auto: true,
-  // when receiving response data, the module will match its Content-Type header
-  // with strings in this array. If it contains any one of string in this array,
-  // the response body will be considered as binary data and the data will be stored
-  // in file system instead of in memory.
-  // By default, it only store response data to file system when Content-Type
-  // contains string `application/octet`.
   binaryContentTypes: ['image/', 'video/', 'audio/', 'foo/'],
 }).build();
 
-const Camera=({navigation})=>{
-    const [typeCamera, setTypeCamera] = useState(RNCamera.Constants.Type.back);
-    const [flashCamera, setFlashCamera] = useState(
-      RNCamera.Constants.FlashMode.off,
-    );
-    const [photo, setPhoto] = useState(null);
-    const [urlPhoto, setUrlPhoto] = useState('');
-    const [userPathName, setName] = useState('');
-    const [loading, setLoading] = useState(false);
-    const takePicture = async () => {
-        if (camera) {
-          const options = {quality: 0.5, base64: true};
-          const data = await camera.takePictureAsync(options);
-          setPhoto(data.uri);
-          console.log(data.uri);
-        }
-      };
-    return(
-        <View style={container}>
-           {photo !== null ? (
+const Camera = ({closeCamera}) => {
+  const [typeCamera, setTypeCamera] = useState(RNCamera.Constants.Type.back);
+  const [flashCamera, setFlashCamera] = useState(
+    RNCamera.Constants.FlashMode.off,
+  );
+  // console.log('render')
+
+  const [photo, setPhoto] = useState(null);
+  const [urlPhoto, setUrlPhoto] = useState('');
+  const [userPathName, setName] = useState('');
+  const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
+  const takePicture = async () => {
+    if (camera) {
+      const options = {quality: 0.1, base64: true};
+      const data = await camera.takePictureAsync(options);
+      setPhoto(data.uri);
+      console.log(data.uri);
+    }
+  };
+  function formatUpload(uri, mime = 'image/jpeg', name) {
+    return new Promise((resolve, reject) => {
+      let imgUri = uri;
+      let uploadBlob = null;
+      const uploadUri =
+        Platform.OS === 'ios' ? imgUri.replace('file://', '') : imgUri;
+      const imageName = `${name}${Date.now()}.jpg`;
+      const imageRef = appdata
+        .storage()
+        .ref(`/images/${userPathName}`)
+        .child(imageName);
+      fs.readFile(uploadUri, 'base64')
+        .then((data) => {
+          return Blob.build(data, {type: `${mime};BASE64`});
+        })
+        .then((blob) => {
+          uploadBlob = blob;
+          return imageRef.put(blob, {contentType: mime, name: name});
+        })
+        .then(() => {
+          uploadBlob.close();
+          return imageRef.getDownloadURL();
+        })
+        .then((url) => {
+          resolve(url);
+          setUrlPhoto(url);
+          uploadData(url);
+        })
+        .catch((error) => {
+          console.log(error);
+          reject(error);
+        });
+    });
+  }
+  async function uploadImage() {
+    const mime = 'image/jpeg';
+
+    const name = 'proPicture';
+    if (photo) {
+      try {
+        await formatUpload(photo, mime, name).then((url) => {
+          setUrlPhoto(url);
+          dispatch(SET_PROFILE_PICTURE(url));
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      ToastAndroid.show('Anda harus memasukkan foto cover', ToastAndroid.SHORT);
+    }
+  }
+  async function handleNext() {
+    try {
+      setLoading(true);
+      await uploadImage();
+      await setTimeout(() => {
+        setLoading(false);
+       
+        ToastAndroid.show(
+          'Berhasil Mengganti Photo Profil',
+          ToastAndroid.SHORT,
+        );
+        setPhoto(null);
+        closeCamera()
+      }, 1500);
+    } catch (error) {
+      alert(error.message);
+    }
+  }
+  const close = useCallback(() => {
+    closeCamera();
+  }, [close]);
+  return (
+    <View style={container}>
+      {photo !== null ? (
         <View style={globalStyle.preview}>
           <ImageBackground
             source={{uri: photo}}
             style={{flex: 1, flexWrap: 'wrap'}}
-            resizeMode='contain'>
+            resizeMode="contain">
             {loading && <ActivityIndicator size="large" color="white" />}
             <View
               style={{
@@ -66,13 +135,13 @@ const Camera=({navigation})=>{
               }}>
               <TouchableOpacity
                 onPress={() => setPhoto(null)}
-                style={globalStyle.closeIconContainer}>
+                style={closeIconContainer}>
                 <MaterialCommunity name="close" size={25} color="black" />
               </TouchableOpacity>
               <TouchableOpacity
-              disabled={photo===null}
-                onPress={()=>from ==='EditProfile'? handleNext():navigation.navigate('GalleryPhoto',{uri:photo})}
-                style={[globalStyle.closeIconContainer, {right: 15}]}>
+                disabled={photo === null}
+                onPress={() => handleNext()}
+                style={[closeIconContainer, {right: 15}]}>
                 <MaterialCommunity
                   name="skip-next-circle-outline"
                   size={25}
@@ -83,7 +152,7 @@ const Camera=({navigation})=>{
           </ImageBackground>
         </View>
       ) : (
-       <RNCamera
+        <RNCamera
           ref={(ref) => {
             camera = ref;
           }}
@@ -135,14 +204,14 @@ const Camera=({navigation})=>{
                   color="#FFFFFF"
                 />
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => navigation.goBack()}>
+              <TouchableOpacity onPress={close}>
                 <MaterialCommunity name="close" size={38} color="#FFFFFF" />
               </TouchableOpacity>
             </View>
           </View>
           <View style={{flexDirection: 'row', top: height / 1.15}}>
             <TouchableOpacity
-              // onPress={openGallery}
+              onPress={() => alert(`Sorry, this feature have'nt implemented`)}
               style={[capture, {left: -15}]}>
               <MaterialCommunity
                 name="camera-image"
@@ -150,9 +219,7 @@ const Camera=({navigation})=>{
                 color="#FFFFFF"
               />
             </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => takePicture()}
-              style={capture}>
+            <TouchableOpacity onPress={() => takePicture()} style={capture}>
               <MaterialCommunity name="camera-iris" size={60} color="#FFFFFF" />
             </TouchableOpacity>
             <TouchableOpacity
@@ -173,7 +240,7 @@ const Camera=({navigation})=>{
           </View>
         </RNCamera>
       )}
-        </View>
-    )
-}
-export default Camera
+    </View>
+  );
+};
+export default Camera;

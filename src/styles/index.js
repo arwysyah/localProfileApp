@@ -93,6 +93,10 @@ const globalStyle = StyleSheet.create({
     flex: 1,
     backgroundColor: 'black',
   },
+  imageProfile: {
+    flex: 1,
+    width: width / 6.6,
+  },
   capture: {
     // backgroundColor: '#fff',
     borderRadius: 5,
@@ -121,6 +125,58 @@ const globalStyle = StyleSheet.create({
     marginBottom: 5,
     shadowRadius: 1,
     shadowOffset: {height: 2, width: 0},
+  },
+  avatarContainer: {
+    width: 60,
+    height: 60,
+    borderRadius: 100,
+    borderColor: 'grey',
+    borderWidth: 0.5,
+    overflow: 'hidden',
+    top: 20,
+    left: -40,
+  },
+  closeIconContainer: {
+    position: 'absolute',
+    top: 8,
+
+    marginLeft: 8,
+    zIndex: 999,
+    width: 30,
+    height: 30,
+    borderRadius: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  backIconContainer: {
+    position: 'absolute',
+
+    left: 15,
+    zIndex: 999,
+    width: 35,
+    height: 35,
+    borderRadius: 35,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+    top: -spacing + 15
   },
 });
 

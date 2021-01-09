@@ -1,4 +1,4 @@
-import React, {useState,useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -10,6 +10,8 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {globalStyle, TOP} from '../styles/index';
+import {useDispatch} from 'react-redux';
+import {SET_SIGNED_IN} from '../redux/action';
 const {
   container,
   content,
@@ -25,35 +27,32 @@ const realPassword = '1';
 const Login = ({navigation}) => {
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
-  useEffect(() => {
-    getData();
-  }, []);
-
+  const dispatch = useDispatch();
+  useEffect(()=>{
+    getData()
+  })
   const getData = async () => {
     try {
-      const value = await AsyncStorage.getItem('rootUser');
-      if (value !== null) {
-        await navigation.replace('BottomNavigation');
-      } else {
-       await navigation.replace('Login');
-      }
-    } catch (e) {
-      console.log(e)
+      const jsonValue = await AsyncStorage.getItem('rootUser')
+      return jsonValue != null ? navigation.replace('BottomNavigation') : null;
+    } catch(e) {
+      alert(e)
     }
-  };
+  }
+  
   async function handleSignIn() {
     //use function declaration cause The arrow function returns a new function every time. This causes React to think something has changed in our view, when in fact nothing has.
     try {
       if (email !== realEmail) {
-        ToastAndroid.show('Email yang anda masukkan salah', ToastAndroid.SHORT);
+        ToastAndroid.show('Email is not registered', ToastAndroid.SHORT);
       } else if (password !== realPassword) {
         ToastAndroid.show(
-          'Password yang anda masukkan salah',
+          'Incorrect Password',
           ToastAndroid.SHORT,
         );
       } else {
-        const token = 'AxJXsagZJXAHSJASHHEbbKSJDdwak';
-        await storeData(token);
+        await storeData({email:email,password:password});
+        dispatch(SET_SIGNED_IN({email: email, password: password}));
         await navigation.replace('BottomNavigation');
       }
     } catch (error) {
@@ -62,7 +61,8 @@ const Login = ({navigation}) => {
   }
   const storeData = async (value) => {
     try {
-      await AsyncStorage.setItem('rootUser', value);
+      const newValue = JSON.stringify(value)
+      await AsyncStorage.setItem('rootUser', newValue);
     } catch (e) {
       console.log(e);
     }
@@ -74,8 +74,8 @@ const Login = ({navigation}) => {
           <ImageBackground
             source={require('../assets/phoneLogin.png')}
             style={image}>
-            <Text style={{fontSize: 10, fontWeight: 'bold', left: -20}}>
-              Login
+            <Text style={{fontSize: 10, fontWeight: 'bold', left: -22}}>
+              Log in
             </Text>
           </ImageBackground>
           <Text style={title}>Enter your email and password to login</Text>

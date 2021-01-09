@@ -1,6 +1,6 @@
 import React from 'react';
 import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
-import BottomNavigation from '../bottomNavigation/index';
+import {BottomNavigation} from '../bottomNavigation/index';
 import Login from '../../screen/Login';
 const Stack = createStackNavigator();
 const AuthStack = () => {
@@ -13,7 +13,7 @@ const AuthStack = () => {
         headerStatusBarHeight:
           navigation
             .dangerouslyGetState()
-            .routes.findIndex((r) => r.key === route.key) > 3
+            .routes.findIndex((r) => r.key === route.key) > 0
             ? 0
             : undefined,
         ...TransitionPresets.ModalPresentationIOS,

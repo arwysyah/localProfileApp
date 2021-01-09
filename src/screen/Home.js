@@ -1,29 +1,61 @@
-import React, {useEffect} from 'react';
-import {View,SafeAreaView,Alert} from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {globalStyle, TOP} from '../styles';
-const {container, cardContainer} = globalStyle; //destructuring style for not make reference
-const Home = ({navigation}) => {
-  useEffect(() => {
-    getData();
-  }, []);
+import React,{useEffect, useState} from 'react';
+import {View, SafeAreaView, Alert, Image, Text} from 'react-native';
+import {globalStyle, height} from '../styles';
+import {useSelector} from 'react-redux';
+import AsyncStorage from '@react-native-async-storage/async-storage'
+const {container, cardContainer, imageProfile, avatarContainer} = globalStyle; //destructuring style for not make reference
 
-  const getData = async () => {
-    try {
-      const value = await AsyncStorage.getItem('rootUser');
-      if (value !== null) {
-        console.log(value);
-      } else {
-        navigation.replace('Login');
-      }
-    } catch (e) {
-      Alert.alert('Maaf sepertinya ada kesalahan')
-    }
-  };
+const Home = ({navigation}) => {
+  const [email,setEmail]=useState('')
+  const globalState = useSelector((state) => state);
+  const profileImage = globalState.photo;
+//not using reselect cause will overkill on this project
+
+
+useEffect(()=>{
+getData()
+},[])
+
+const getData = async () => {
+  try {
+    const jsonValue = await AsyncStorage.getItem('rootUser')
+   let newVal =  jsonValue !== null ? JSON.parse(jsonValue) : navigation.replace('Login')
+   setEmail(newVal.email) 
+
+  } catch(e) {
+   alert(e)
+  }
+}
   return (
     <SafeAreaView style={container}>
-      <View style={{alignItems: 'center', top: TOP}}>
-        <View style={cardContainer}></View>
+      <View style={{alignItems: 'center', top: height * 0.4}}>
+        <View
+          style={[
+            cardContainer,
+            {justifyContent: 'space-evenly', flexDirection: 'row'},
+          ]}>
+          <View style={avatarContainer}>
+            <Image
+              style={imageProfile}
+              source={
+                profileImage === null
+                  ? require('../assets/avatar.jpg')
+                  : {uri: profileImage}
+              }
+              resizeMode="cover"
+            />
+          </View>
+          <Text
+            style={{
+              textTransform: 'capitalize',
+              fontSize: 20,
+              fontWeight: 'bold',
+              top: 33,
+              left: -14,
+            }}>
+            {email}
+          </Text>
+        </View>
       </View>
     </SafeAreaView>
   );
